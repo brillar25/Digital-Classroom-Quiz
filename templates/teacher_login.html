@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Teacher Login{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="app-card">
+                    <div class="text-center mb-4">
+                        <div class="big-icon purple-bg"><i class="bi bi-shield-lock-fill"></i></div>
+                        <h1 class="page-heading mt-3">Teacher Login</h1>
+                        <p class="page-subtitle">Authorized teachers only.</p>
+                    </div>
+                    <form method="POST">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control mb-3" required autofocus>
+                        <button class="btn btn-purple w-100">Login <i class="bi bi-box-arrow-in-right ms-1"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }}{% endblock %}
+{% block content %}
+<section class="page-section quiz-page">
+    <div class="container">
+        <div class="quiz-topbar">
+            <div>
+                <div class="text-secondary small">Student: <strong>{{ attempt.student_name }}</strong> · {{ attempt.register_no }}</div>
+                <h2 class="fw-bold mb-0">{{ quiz.title }}</h2>
+            </div>
+            <div class="timer-box" id="timerBox">
+                <i class="bi bi-stopwatch-fill me-1"></i>
+                <span id="timer">{{ remaining }}</span>s
+            </div>
+        </div>
+
+        <div class="progress mb-4" style="height: 9px;">
+            <div class="progress-bar" role="progressbar" style="width: {{ ((question_index + 1) / total_questions * 100)|round(0) }}%"></div>
+        </div>
+
+        <div class="question-card big-question-card">
+            <div class="question-meta">Question {{ question_index + 1 }} of {{ total_questions }}</div>
+            <h3 class="fw-bold mt-2">{{ question.question }}</h3>
+
+            <form id="answerForm" method="POST" action="{{ url_for('quiz_question', attempt_id=attempt.id, question_index=question_index) }}">
+                <div class="options-grid">
+                    {% for key, text in [
+                        ("option1", question.option1),
+                        ("option2", question.option2),
+                        ("option3", question.option3),
+                        ("option4", question.option4)
+                    ] %}
+                    <label class="option-box quiz-option">
+                        <input class="form-check-input me-2 answer-radio" type="radio" name="answer" value="{{ key }}">
+                        <span>{{ text }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <button id="nextButton" type="submit" class="btn btn-green btn-lg w-100 mt-4">
+                    {% if question_index + 1 == total_questions %}Submit Quiz{% else %}Save & Next Question{% endif %}
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="text-center text-secondary small mt-3">
+            Time is checked by the server. When the 45 seconds expire, this question is submitted as unanswered.
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let remaining = {{ remaining }};
+const timer = document.getElementById("timer");
+const timerBox = document.getElementById("timerBox");
+const form = document.getElementById("answerForm");
+const nextButton = document.getElementById("nextButton");
+let submitted = false;
+
+function tick() {
+    timer.textContent = remaining;
+
+    if (remaining <= 10) {
+        timerBox.classList.add("timer-danger");
+    }
+
+    if (remaining <= 0) {
+        if (!submitted) {
+            submitted = true;
+            nextButton.disabled = true;
+            form.submit();
+        }
+        return;
+    }
+
+    remaining--;
+    setTimeout(tick, 1000);
+}
+
+tick();
+
+form.addEventListener("submit", function() {
+    submitted = true;
+});
+</script>
+{% endblock %}

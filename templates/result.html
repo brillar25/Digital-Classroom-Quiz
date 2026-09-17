@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="score-box">
+            <div class="big-icon green-bg"><i class="bi bi-check-circle-fill"></i></div>
+            <h1 class="fw-bold mt-3">Quiz Completed</h1>
+            <p class="text-secondary mb-1">{{ quiz.title }}</p>
+            <p class="text-secondary">{{ attempt.student_name }} · {{ attempt.register_no }}</p>
+
+            <div class="score-circle">
+                <h1>{{ attempt.score }}/{{ attempt.total }}</h1>
+                <span>Correct Answers</span>
+            </div>
+
+            <h3 class="fw-bold mt-3">
+                {{ ((attempt.score / attempt.total) * 100)|round(1) if attempt.total else 0 }}%
+            </h3>
+
+            <div class="result-meta">
+                <span><i class="bi bi-clock me-1"></i>{{ attempt.started_at|display_dt }}</span>
+                <span><i class="bi bi-arrow-repeat me-1"></i>Attempt ID #{{ attempt.id }}</span>
+            </div>
+
+            <a href="{{ url_for('student') }}" class="btn btn-green mt-3">Attempt Again</a>
+            <a href="{{ url_for('home') }}" class="btn btn-purple mt-3">Home</a>
+        </div>
+
+        <div class="app-card mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1">Answer Review</h4>
+                    <p class="text-secondary mb-0">Questions answered incorrectly or left unanswered are shown below.</p>
+                </div>
+            </div>
+
+            {% for item in review %}
+            <div class="review-card {{ 'review-correct' if item.is_correct else 'review-wrong' }}">
+                <div class="d-flex justify-content-between gap-3">
+                    <h5 class="fw-bold mb-2">Q{{ loop.index }}. {{ item.question }}</h5>
+                    {% if item.is_correct %}
+                        <span class="badge text-bg-success align-self-start">Correct</span>
+                    {% else %}
+                        <span class="badge text-bg-danger align-self-start">Wrong</span>
+                    {% endif %}
+                </div>
+
+                {% if item.is_correct %}
+                    <div><strong>Your answer:</strong> {{ item.selected_text }}</div>
+                {% else %}
+                    {% if item.timed_out %}
+                        <div class="text-danger fw-semibold"><i class="bi bi-stopwatch me-1"></i>Time expired — not answered.</div>
+                    {% else %}
+                        <div><strong>Your answer:</strong> {{ item.selected_text }}</div>
+                    {% endif %}
+                    <div class="text-success mt-1"><strong>Correct answer:</strong> {{ item.correct_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

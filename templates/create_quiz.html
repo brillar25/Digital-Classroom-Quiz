@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Create Quiz{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <h1 class="page-heading">Create a New Quiz</h1>
+                <p class="page-subtitle">Create the quiz first, then add its MCQ questions.</p>
+                <div class="app-card">
+                    <form method="POST">
+                        <label class="form-label">Quiz Title</label>
+                        <input type="text" name="title" class="form-control mb-4" placeholder="Example: Cloud Computing Quiz" required>
+                        <button type="submit" class="btn btn-purple">Create Quiz</button>
+                        <a href="{{ url_for('teacher') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

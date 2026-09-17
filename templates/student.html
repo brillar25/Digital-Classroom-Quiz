@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Student Portal{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-9 text-center">
+                <h1 class="page-heading">Student Portal</h1>
+                <p class="page-subtitle">Enter your details once for the attempt. You may attempt the same quiz again later.</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="app-card sticky-card">
+                    <h4 class="fw-bold mb-3"><i class="bi bi-person-vcard me-2"></i>Student Details</h4>
+                    <form id="studentStartForm" method="POST">
+                        <label class="form-label">Student Name</label>
+                        <input id="studentName" type="text" name="student_name" class="form-control mb-3" required>
+
+                        <label class="form-label">Register Number</label>
+                        <input id="registerNo" type="text" name="register_no" class="form-control mb-3" required>
+
+                        <input id="selectedQuizId" type="hidden" name="quiz_id">
+
+                        <div class="info-box">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Every question has <strong>45 seconds</strong>. If time expires, the question is automatically recorded as unanswered.
+                        </div>
+
+                        <button id="startButton" type="submit" class="btn btn-green w-100 mt-3" disabled>
+                            Select a Quiz Below
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="app-card">
+                    <h4 class="fw-bold mb-4">Available Quizzes</h4>
+                    {% if quizzes %}
+                        {% for quiz in quizzes %}
+                        <div class="quiz-list-card">
+                            <div>
+                                <div class="fw-bold">{{ quiz.title }}</div>
+                                <small class="text-secondary">
+                                    {{ quiz.questions|length }} question(s) · 45 sec/question · Multiple attempts allowed
+                                </small>
+                            </div>
+                            <button type="button" class="btn btn-green choose-quiz" data-quiz-id="{{ quiz.id }}" data-quiz-title="{{ quiz.title }}">
+                                Attempt
+                            </button>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="bi bi-journal-x"></i>
+                            <h5>No quizzes available</h5>
+                            <p class="text-secondary">Ask the teacher to create a quiz.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const nameInput = document.getElementById("studentName");
+const regInput = document.getElementById("registerNo");
+const quizIdInput = document.getElementById("selectedQuizId");
+const startButton = document.getElementById("startButton");
+const form = document.getElementById("studentStartForm");
+
+document.querySelectorAll(".choose-quiz").forEach(button => {
+    button.addEventListener("click", () => {
+        quizIdInput.value = button.dataset.quizId;
+        form.action = `/start_quiz/${button.dataset.quizId}`;
+        startButton.disabled = !(nameInput.value.trim() && regInput.value.trim());
+        startButton.textContent = `Start "${button.dataset.quizTitle}"`;
+        document.querySelectorAll(".choose-quiz").forEach(b => b.classList.remove("selected-quiz"));
+        button.classList.add("selected-quiz");
+        window.scrollTo({top: 0, behavior: "smooth"});
+    });
+});
+
+function updateStartButton() {
+    const selected = quizIdInput.value;
+    startButton.disabled = !(selected && nameInput.value.trim() && regInput.value.trim());
+}
+nameInput.addEventListener("input", updateStartButton);
+regInput.addEventListener("input", updateStartButton);
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+            <div>
+                <h1 class="page-heading">Teacher Dashboard</h1>
+                <p class="page-subtitle">Manage quizzes and view the latest attempt for each student.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('create_quiz') }}" class="btn btn-purple"><i class="bi bi-plus-lg me-1"></i>Create Quiz</a>
+                <a href="{{ url_for('teacher_logout') }}" class="btn btn-outline-secondary">Logout</a>
+            </div>
+        </div>
+
+        <div class="app-card mb-4">
+            <h4 class="fw-bold mb-3"><i class="bi bi-file-earmark-text me-2"></i>Quizzes</h4>
+            {% if quizzes %}
+                {% for quiz in quizzes %}
+                {% set active_count = quiz.questions|selectattr('is_active')|list|length %}
+                <div class="quiz-list-card">
+                    <div>
+                        <div class="fw-bold">{{ quiz.title }}</div>
+                        <small class="text-secondary">{{ active_count }} active question(s) · Quiz ID {{ quiz.id }}</small>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ url_for('add_question', quiz_id=quiz.id) }}" class="btn btn-outline-primary">Manage Questions</a>
+                        <a href="{{ url_for('edit_quiz', quiz_id=quiz.id) }}" class="btn btn-outline-secondary">Edit Quiz</a>
+                        <form method="POST" action="{{ url_for('delete_quiz', quiz_id=quiz.id) }}" onsubmit="return confirm('Delete this quiz and its stored attempts? This cannot be undone.');">
+                            <button class="btn btn-outline-danger" type="submit">Delete Quiz</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-secondary mb-0">No quizzes created yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="app-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1"><i class="bi bi-people-fill me-2"></i>Student Attendance & Latest Scores</h4>
+                    <p class="text-secondary mb-0">One row per register number per quiz. Re-attempts replace the previous row in this view.</p>
+                </div>
+                <span class="badge rounded-pill text-bg-primary">{{ attendance|length }} unique record(s)</span>
+            </div>
+            {% if attendance %}
+            <div class="table-responsive">
+                <table class="table align-middle teacher-table">
+                    <thead><tr><th>Quiz</th><th>Student Name</th><th>Register No.</th><th>Attempted At</th><th>Status</th><th>Latest Score</th><th>View</th></tr></thead>
+                    <tbody>
+                    {% for row in attendance %}
+                        {% set a = row.attempt %}
+                        <tr>
+                            <td class="fw-semibold">{{ row.quiz.title }}</td>
+                            <td>{{ a.student_name }}</td>
+                            <td><span class="reg-pill">{{ a.register_no }}</span></td>
+                            <td>{{ a.started_at|display_dt }}</td>
+                            <td>{% if a.status == "completed" %}<span class="badge text-bg-success">Completed</span>{% else %}<span class="badge text-bg-warning">In progress</span>{% endif %}</td>
+                            <td>{% if a.status == "completed" %}<strong>{{ a.score }}/{{ a.total }}</strong> <small class="text-secondary">({{ ((a.score / a.total) * 100)|round(1) if a.total else 0 }}%)</small>{% else %}—{% endif %}</td>
+                            <td><a href="{{ url_for('result', attempt_id=a.id) }}" class="btn btn-sm btn-outline-primary">Details</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <div class="empty-state"><i class="bi bi-person-x"></i><h5>No students have attempted a quiz yet.</h5><p class="text-secondary mb-0">Once a student starts a test, attendance will appear here.</p></div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

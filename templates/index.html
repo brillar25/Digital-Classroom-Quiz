@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Digital Classroom Quiz{% endblock %}
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="bi bi-stars"></i> Digital Learning</div>
+            <h1 class="hero-title">Learn. Quiz.<br><span class="gradient-text">Succeed.</span></h1>
+            <p class="hero-description">
+                A classroom quiz platform with automatic evaluation, attendance tracking,
+                multiple attempts and a 45-second timer for every question.
+            </p>
+
+            <div class="row g-4 mt-3 justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="role-card">
+                        <div class="role-icon teacher-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                        <h4>Teacher Portal</h4>
+                        <p>Create, edit and delete quizzes and MCQs, and view attendance and the latest attempt for each student.</p>
+                        <a href="{{ url_for('teacher_login') }}" class="btn btn-purple w-100">
+                            Teacher Login <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-5">
+                    <div class="role-card">
+                        <div class="role-icon student-icon"><i class="bi bi-person-fill"></i></div>
+                        <h4>Student Portal</h4>
+                        <p>Enter your name and register number, attempt quizzes multiple times and review mistakes.</p>
+                        <a href="{{ url_for('student') }}" class="btn btn-green w-100">
+                            Student Portal <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title"><i class="bi bi-bar-chart-fill me-2"></i>Features</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3"><div class="feature-card">
+                <div class="feature-icon purple-bg"><i class="bi bi-clock-history"></i></div>
+                <h5>45-Second Timer</h5><p>Each question gets its own 45-second limit.</p>
+            </div></div>
+            <div class="col-md-6 col-lg-3"><div class="feature-card">
+                <div class="feature-icon green-bg"><i class="bi bi-arrow-repeat"></i></div>
+                <h5>Multiple Attempts</h5><p>Students can take the same quiz more than once.</p>
+            </div></div>
+            <div class="col-md-6 col-lg-3"><div class="feature-card">
+                <div class="feature-icon blue-bg"><i class="bi bi-person-check"></i></div>
+                <h5>Attendance</h5><p>Name, register number, date and time are recorded when a test starts.</p>
+            </div></div>
+            <div class="col-md-6 col-lg-3"><div class="feature-card">
+                <div class="feature-icon orange-bg"><i class="bi bi-pencil-square"></i></div>
+                <h5>Quiz Management</h5><p>Teachers can edit or delete quizzes and individual questions.</p>
+            </div></div>
+        </div>
+    </div>
+</section>
+{% endblock %}
